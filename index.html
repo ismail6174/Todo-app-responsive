@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>To-Do web</title>
+ 
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+ <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #e7f5f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.main {
+  background-color: rgb(174, 250, 224);
+  width: 100%;
+  max-width: 500px;
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h1 {
+  font-size: 50px;
+  margin-bottom: 30px;
+  color: #13543E;
+}
+
+input#todo {
+  width: 70%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid gray;
+}
+
+button {
+  font-size: 16px;
+  margin: 5px 4px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+#add {
+  color: white;
+  background-color: #13543E;
+}
+
+#delete {
+  color: white;
+  background-color: rgb(204, 0, 0);
+}
+
+#itemlist {
+  margin-top: 20px;
+  text-align: left;
+}
+
+#itemlist li {
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deletebtn, .Editbtn, .savebtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+.deletebtn::before {
+  content: "\f2ed"; /* Trash icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: red;
+}
+
+.Editbtn::before {
+  content: "\f044"; /* Edit icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: green;
+}
+
+.savebtn::before {
+  content: "\f0c7"; /* Save icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: blue;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 20px 15px;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  input#todo {
+    width: 100%;
+  }
+  button {
+    width: 100%;
+    margin-top: 8px;
+  }
+  #itemlist li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+ </style>
+
+</head>
+<body>
+
+<div class="main">
+ <h1>To-do App</h1>
+ 
+ <div>
+  <input type="text" id="todo" placeholder="Enter a task...">
+  <br>
+  <button id="add" onclick="addtodo()">Add <i class="fa-regular fa-square-plus"></i></button>
+  <button id="delete" onclick="deleteallTodo()">Delete All <i class="fa-solid fa-trash-can"></i></button>
+ </div>
+ 
+ <div>
+  <ol id="itemlist"></ol>
+ </div>
+</div>
+
+<script>
+function addtodo() {
+  try {
+    var todoInput = document.getElementById("todo");
+    if (todoInput.value) {
+      var liELement = document.createElement("li");
+      var olElement = document.getElementById("itemlist");
+
+      var liText = document.createElement("span");
+      liText.innerText = todoInput.value;
+      liELement.appendChild(liText);
+
+      var EditbtnElement = document.createElement("button");
+      EditbtnElement.setAttribute("onclick", "EditSingleTodo(this)");
+      EditbtnElement.setAttribute("class", "Editbtn");
+      liELement.appendChild(EditbtnElement);
+
+      var DelbtnElement = document.createElement("button");
+      DelbtnElement.setAttribute("onclick", "deleteSingleTodo(this)");
+      DelbtnElement.setAttribute("class", "deletebtn");
+      liELement.appendChild(DelbtnElement);
+
+      olElement.appendChild(liELement);
+      todoInput.value = "";
+    } else {
+      alert("required input field");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function deleteallTodo() {
+  var olElement = document.getElementById("itemlist");
+  olElement.innerHTML = "";
+}
+
+function deleteSingleTodo(e) {
+  e.parentNode.remove();
+}
+
+function EditSingleTodo(e) {
+  var span = e.parentNode.querySelector("span");
+
+  // Create an input field
+  var input = document.createElement("input");
+  input.type = "text";
+  input.value = span.innerText;
+  input.style.flex = "1";
+  span.replaceWith(input);
+
+  // Change edit button to save button
+  e.className = "savebtn";
+  e.setAttribute("onclick", "SaveSingleTodo(this)");
+}
+
+function SaveSingleTodo(e) {
+  var input = e.parentNode.querySelector("input");
+
+  // Create span again
+  var span = document.createElement("span");
+  span.innerText = input.value;
+  input.replaceWith(span);
+
+  // Change save button back to edit button
+  e.className = "Editbtn";
+  e.setAttribute("onclick", "EditSingleTodo(this)");
+}
+</script>
+
+</body>
+</html>
